@@ -1,0 +1,255 @@
+MPASM 5.87                PICPROJECTMAIN.ASM   5-13-2024  18:18:09         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000001            00001 opt     equ     01h
+  00000002            00002 pcl     equ     02h
+  00000003            00003 status  equ     03h
+  00000006            00004 portb   equ     06h
+  00000086            00005 trisb   equ     86h
+                      00006         
+  00000000            00007 c       equ     0h
+  00000005            00008 rp0     equ     5h
+                      00009 
+  00000001            00010 btn     equ     1h
+  00000007            00011 rbpu    equ     7h
+                      00012 
+  00000004            00013 dat     equ     4h
+  00000005            00014 syn     equ     5h
+                      00015 
+  0000000C            00016 x       equ     0Ch
+  0000000D            00017 ctr1    equ     0Dh
+  0000000E            00018 ctr2    equ     0Eh
+  0000000F            00019 w1      equ     0Fh
+  00000010            00020 w2      equ     10h
+  00000011            00021 w3      equ     11h
+  00000012            00022 n       equ     12h
+  00000013            00023 xn      equ     13h
+                      00024 
+                      00025 
+                      00026 
+                      00027         org     0h
+0000   2???           00028         goto    start
+                      00029         org     4h
+0004   0009           00030         retfie
+                      00031 
+                      00032 
+0005                  00033 display
+0005   3004           00034         movlw   d'4'
+0006   008D           00035         movwf   ctr1
+                      00036 
+0007   080C           00037         movf    x,0
+0008   008F           00038         movwf   w1
+                      00039 
+                      00040 
+0009                  00041 cl1
+0009   300A           00042         movlw   d'10'
+000A   2???           00043         call    div
+000B   2???           00044         call    encode
+000C   2???           00045         call    out
+000D   0B8D           00046         decfsz  ctr1,1
+000E   2???           00047         goto    cl1
+000F   0008           00048         return
+                      00049 
+0010                  00050 div
+0010   0090           00051         movwf   w2
+0011   080F           00052         movf    w1,0
+0012   0091           00053         movwf   w3
+MPASM 5.87                PICPROJECTMAIN.ASM   5-13-2024  18:18:09         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0013   018F           00054         clrf    w1
+0014   0810           00055         movf    w2,0
+                      00056 
+0015                  00057 cl2
+0015   0A8F           00058         incf    w1,1
+0016   0291           00059         subwf   w3,1
+0017   1803           00060         btfsc   status,c
+0018   2???           00061         goto    cl2
+0019   038F           00062         decf    w1,1
+001A   0711           00063         addwf   w3,0
+001B   0008           00064         return
+                      00065 
+                      00066         
+001C                  00067 encode
+001C   0782           00068         addwf   pcl,1                 
+001D   3403           00069         retlw   b'00000011'  
+001E   349F           00070         retlw   b'10011111'  
+001F   3425           00071         retlw   b'00100101'  
+0020   340D           00072         retlw   b'00001101'  
+0021   3499           00073         retlw   b'10011001'  
+0022   3449           00074         retlw   b'01001001'
+0023   3441           00075         retlw   b'01000001'
+0024   341F           00076         retlw   b'00011111'
+0025   3401           00077         retlw   b'00000001'
+0026   3409           00078         retlw   b'00001001'
+                      00079         
+                      00080         
+  00000004            00081 dat     equ     4h
+  00000005            00082 syn     equ     5h
+                      00083         
+                      00084         
+0027                  00085 out
+0027   0090           00086         movwf   w2         
+0028   3008           00087         movlw   d'8'       
+0029   008E           00088         movwf   ctr2       
+                      00089 
+002A                  00090 c13
+002A   1606           00091         bsf     portb,dat        
+002B   1C10           00092         btfss   w2,0 
+002C   1206           00093         bcf     portb,dat      
+002D   1286           00094         bcf     portb,syn
+002E   1686           00095         bsf     portb,syn
+002F   0C90           00096         rrf     w2,1            
+0030   0B8E           00097         decfsz  ctr2,1          
+0031   2???           00098         goto    c13      
+0032   0008           00099         return
+                      00100         
+0033                  00101 pause
+0033   30FF           00102         movlw   d'255'
+0034   080D           00103         movfw   ctr1
+0035                  00104 ps1
+0035   018E           00105         clrf    ctr2
+0036   2???           00106         call    btnchk
+MPASM 5.87                PICPROJECTMAIN.ASM   5-13-2024  18:18:09         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0037                  00107 ps2
+0037   0B8E           00108         decfsz  ctr2,1
+0038   2???           00109         goto    ps2
+0039   0B8D           00110         decfsz  ctr1,1
+003A   2???           00111         goto    ps1
+003B   0008           00112         return
+                      00113 
+003C                  00114 dreb
+003C   301E           00115         movlw   d'30'
+003D   080D           00116         movfw   ctr1
+003E                  00117 dr1
+003E   018E           00118         clrf    ctr2
+003F                  00119 dr2
+003F   0B8E           00120         decfsz  ctr2,1
+0040   2???           00121         goto    dr2
+0041   0B8D           00122         decfsz  ctr1,1
+0042   2???           00123         goto    dr1
+0043   0008           00124         return
+                      00125 
+0044                  00126 btnchk
+0044   1886           00127         btfsc   portb,btn
+0045   0008           00128         return
+0046   2???           00129         call    dreb
+0047                  00130 btn0
+0047   1C86           00131         btfss   portb,btn
+0048   2???           00132         goto    btn0
+0049   2???           00133         call    dreb
+004A                  00134 btn1
+004A   1886           00135         btfsc   portb,btn       
+004B   2???           00136         goto    btn1
+004C   2???           00137         call    dreb
+004D                  00138 btn2    
+004D   1C86           00139         btfss   portb,btn
+004E   2???           00140         goto    btn2
+004F   2???           00141         call    dreb
+0050   0008           00142         return
+                      00143         
+                      00144         
+0051                  00145 start
+0051   1683           00146         bsf     status,rp0   
+0052   30CF           00147         movlw   b'11001111'  
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0053   0086           00148         movwf   trisb        
+0054   1381           00149         bcf     opt,7
+0055   1283           00150         bcf     status,rp0 
+0056                  00151 m00
+0056   0192           00152         clrf    n
+0057   3001           00153         movlw   b'00000001'
+0058   0093           00154         movwf   xn
+0059   1003           00155         bcf     status, 0
+005A   018C           00156         clrf    x
+                      00157         
+005B                  00158 m01
+MPASM 5.87                PICPROJECTMAIN.ASM   5-13-2024  18:18:09         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+005B   0812           00159         movf    n, 0
+005C   0213           00160         subwf   xn, 0
+005D   1C03           00161         btfss   status, 0
+005E   2???           00162         goto    m00
+005F   008C           00163         movwf   x
+                      00164         
+                      00165 
+0060                  00166 c10
+0060   2???           00167         call    display
+0061   2???           00168         call    pause
+0062   2???           00169         call    pause
+0063   1003           00170         bcf     status, 0
+0064   0D93           00171         rlf     xn, 1
+0065   1803           00172         btfsc   status, 0
+0066   2???           00173         goto    m00
+0067   0A92           00174         incf    n, 1
+0068   2???           00175         goto    m01
+                      00176         
+                      00177         end     
+MPASM 5.87                PICPROJECTMAIN.ASM   5-13-2024  18:18:09         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F874                          00000001
+btn                               00000001
+btn0                              00000047
+btn1                              0000004A
+btn2                              0000004D
+btnchk                            00000044
+c                                 00000000
+c10                               00000060
+c13                               0000002A
+cl1                               00000009
+cl2                               00000015
+ctr1                              0000000D
+ctr2                              0000000E
+dat                               00000004
+display                           00000005
+div                               00000010
+dr1                               0000003E
+dr2                               0000003F
+dreb                              0000003C
+encode                            0000001C
+m00                               00000056
+m01                               0000005B
+n                                 00000012
+opt                               00000001
+out                               00000027
+pause                             00000033
+pcl                               00000002
+portb                             00000006
+ps1                               00000035
+ps2                               00000037
+rbpu                              00000007
+rp0                               00000005
+start                             00000051
+status                            00000003
+syn                               00000005
+trisb                             00000086
+w1                                0000000F
+w2                                00000010
+w3                                00000011
+x                                 0000000C
+xn                                00000013
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     1 reported,     0 suppressed
+
+

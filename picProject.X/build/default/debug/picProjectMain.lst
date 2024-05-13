@@ -1,0 +1,66 @@
+MPASM 5.87                PICPROJECTMAIN.ASM   5-3-2024  17:09:23         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000001            00001 opt     equ     01h
+  00000002            00002 pcl     equ     02h
+  00000003            00003 status  equ     03h
+  00000012            00004 n       equ     12h
+  00000013            00005 xn      equ     13h
+  00000014            00006 x       equ     14h
+                      00007 
+                      00008         org     0h
+0000   2???           00009         goto    m00
+                      00010         org     4h
+0004   0009           00011         retfie
+                      00012 
+                      00013 
+                      00014 
+                      00015 
+                      00016 
+0005                  00017 m00
+0005   0192           00018         clrf    n
+0006   3001           00019         movlw   b'00000001'
+0007   0093           00020         movwf   xn
+0008   1003           00021         bcf     status, 0
+                      00022 
+0009                  00023 m01     
+0009   0812           00024         movf    n, 0
+000A   0713           00025         addwf   xn, 0
+000B   1803           00026         btfsc   status, 0
+000C   2???           00027         goto    m00
+                      00028         
+                      00029 
+000D   1003           00030         bcf     status, 0
+000E   0D93           00031         rlf     xn, 1
+000F   1803           00032         btfsc   status, 0
+0010   2???           00033         goto    m00
+0011   0A92           00034         incf    n, 1
+0012   2???           00035         goto    m01
+                      00036 
+                      00037         end     
+MPASM 5.87                PICPROJECTMAIN.ASM   5-3-2024  17:09:23         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F874                          00000001
+__DEBUG                           
+__MPLAB_DEBUGGER_SIMULATOR        1
+m00                               00000005
+m01                               00000009
+n                                 00000012
+opt                               00000001
+pcl                               00000002
+status                            00000003
+x                                 00000014
+xn                                00000013
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+
